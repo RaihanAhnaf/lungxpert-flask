@@ -23,15 +23,23 @@ def upload_file():
 
         file.save(fileName)
 
-        prediction = lungxpert.prediction(fileName)
+        is_lung = lungxpert.lungDetector(fileName)
+        if is_lung:
+            prediction = lungxpert.prediction(fileName)
+
+            return {
+                "status": "OK",
+                "prediction": prediction
+            }
+        
+        else:
+            return {
+                "status": "NOT OK",
+                "message": "Not Lung"
+            }
 
         if os.path.exists(fileName):
             os.remove(fileName)
-
-        return {
-            "status": "OK",
-            "prediction": prediction
-        }
 
 @app.route("/convert-dcm", methods=["POST"])
 def converter():
